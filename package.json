@@ -1,0 +1,37 @@
+{
+  "name": "file-uploader-cloud",
+  "version": "1.0.0",
+  "description": "File upload cloud storage",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "node --loader=ts-node/esm --env-file=.env --watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FluffyRudy/file-uploader-cloud.git"
+  },
+  "author": "FluffyRudy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FluffyRudy/file-uploader-cloud/issues"
+  },
+  "homepage": "https://github.com/FluffyRudy/file-uploader-cloud#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.0",
+    "@types/multer": "^1.4.12",
+    "@types/passport": "^1.0.17",
+    "prisma": "^5.21.1",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.21.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0"
+  }
+}
