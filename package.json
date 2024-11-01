@@ -4,7 +4,7 @@
   "description": "File upload cloud storage",
   "main": "index.ts",
   "scripts": {
-    "dev": "node --loader=ts-node/esm --env-file=.env --watch src/index.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
@@ -23,11 +23,14 @@
     "@types/express-session": "^1.18.0",
     "@types/multer": "^1.4.12",
     "@types/passport": "^1.0.17",
+    "nodemon": "^3.1.7",
     "prisma": "^5.21.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
+    "@quixo3/prisma-session-store": "^3.1.13",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-session": "^1.18.1",

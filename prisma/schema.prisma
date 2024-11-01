@@ -13,6 +13,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model A {
-  id String @id @default(uuid())
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }
