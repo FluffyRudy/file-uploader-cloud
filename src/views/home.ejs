@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+
+    <h1>Welcome to the Home Page</h1>
+
+    <% if (locals.user) { %>
+        <h2>Hello, <%= locals.user.username %>!</h2>
+        <p><a href="/auth/logout">Logout</a></p>
+    <% } else { %>
+        <p>Please <a href="/auth/signin">sign in</a> or <a href="/auth/signup">sign up</a> to access your account.</p>
+    <% } %>
+
+</body>
+</html>

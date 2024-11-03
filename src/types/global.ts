@@ -1,4 +1,5 @@
 import { AuthApiError, AuthTokenResponse } from "@supabase/supabase-js";
+import { Request } from "express";
 
 export type LoginCredentials = {
     email: string;
@@ -13,3 +14,14 @@ export type User = {
     username: string
     password: string
 }
+
+export interface SignInRequestBody extends Request {
+    email: string,
+    password: string
+}
+
+export interface SignUpRequestBody extends SignInRequestBody {
+    username: string
+}
+
+
