@@ -44,7 +44,6 @@ export const SignUpPost = async (req: Request, res: Response, next: NextFunction
         res.redirect("/");
     } catch (err) {
         if ((err as PrismaClientKnownRequestError).code === 'P2002') {
-            console.log(err)
             return next(new Error("User with this email already exist"));
         }
         return next(new Error("Unknown error occured"))
@@ -59,7 +58,6 @@ export const SignInPost = async (req: Request, res: Response, next: NextFunction
     }
     try {
         passport.authenticate('local', (err: Error, user: User, info: { message: string, status?: any }) => {
-            console.log(err, user, info)
             if (err) {
                 return next(err);
             }
