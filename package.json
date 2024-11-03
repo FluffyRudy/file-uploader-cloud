@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/FluffyRudy/file-uploader-cloud#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.0",
     "@types/multer": "^1.4.12",
     "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
     "nodemon": "^3.1.7",
     "prisma": "^5.21.1",
     "ts-node": "^10.9.2",
@@ -31,10 +33,15 @@
   "dependencies": {
     "@prisma/client": "^5.21.1",
     "@quixo3/prisma-session-store": "^3.1.13",
+    "@supabase/ssr": "^0.4.1",
+    "@supabase/supabase-js": "^2.46.1",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "multer": "^1.4.5-lts.1",
-    "passport": "^0.7.0"
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "serve-favicon": "^2.5.0"
   }
 }
