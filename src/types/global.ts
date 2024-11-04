@@ -1,17 +1,17 @@
 import { AuthApiError, AuthTokenResponse } from "@supabase/supabase-js";
 import { Request } from "express";
 
-export type LoginCredentials = {
+export type StorageAuthCredentials = {
     email: string;
     password: string;
 };
 
-export type LoginResponse = Promise<AuthTokenResponse | AuthApiError>;
+export type StorageAuthResponse = Promise<AuthTokenResponse | AuthApiError>;
 
 export type User = {
-    id: String
+    id: string
     created_at?: Date
-    email: String
+    email: string
     username: string
     password: string
     storage?: string

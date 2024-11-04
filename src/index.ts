@@ -11,6 +11,7 @@ import { User } from "./types/global";
 import { join } from "path"
 import { homeRouter } from "./routers/homeRouter";
 import { authRouter } from "./routers/authRouter";
+import { fileRouter } from "./routers/fileRouter";
 
 config();
 
@@ -85,8 +86,9 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 })
-app.use("/", homeRouter);
 
+app.use("/", homeRouter);
+app.use("/file", fileRouter);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.send(`<h1>${err}</h1>`)
 })

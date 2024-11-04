@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { AuthApiError, AuthResponse, createClient, SupabaseClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
-import { LoginCredentials, LoginResponse } from "./types/global";
+import { StorageAuthCredentials, StorageAuthResponse } from "./types/global";
 
 config();
 
@@ -19,6 +19,7 @@ export class DBClient {
 
 export class StorageClient {
     private storageCLient: SupabaseClient;
+    private bucketName: string | null = null;
 
     constructor() {
         this.storageCLient = createClient(
@@ -27,20 +28,66 @@ export class StorageClient {
         );
     }
 
-    public async logIn(credentials: LoginCredentials): LoginResponse {
+    public async logIn(credentials: StorageAuthCredentials): StorageAuthResponse {
         try {
-            const loginResponse = await this.storageCLient.auth.signInWithPassword(
+            const StorageAuthResponse = await this.storageCLient.auth.signInWithPassword(
                 credentials
             );
-            return loginResponse;
+            return StorageAuthResponse;
         } catch (error) {
             console.error(error);
-            return error as LoginResponse;
+            return error as StorageAuthResponse;
+        }
+    }
+
+    public async signUp(credentials: StorageAuthCredentials): Promise<AuthResponse | AuthApiError> {
+        try {
+            const StorageAuthResponse = await this.storageCLient.auth.signUp(credentials);
+            return StorageAuthResponse;
+        } catch (error) {
+            console.error(error);
+            return (error as AuthApiError)
         }
     }
 
     public getInstance() {
         return this.storageCLient;
+    }
+
+
+    public async createBucket(id: string) {
+        const response = await this.storageCLient.storage.createBucket(id);
+        if (response.error) {
+            return null
+        }
+        return response
+    }
+
+    private getbucket() {
+        return this.storageCLient.storage.from(this.bucketName!);
+    }
+
+    public async checkBucketExists(name: string): Promise<boolean> {
+        const { data, error } = await this.storageCLient.storage.listBuckets();
+        if (error) {
+            console.error(error);
+            return false;
+        }
+        return data.some(bucket => bucket.name === name);
+    }
+
+    public setBucket(id: string) {
+        this.bucketName = id;
+    }
+
+    public async uploadFile(cloudPath: string, blob: Buffer) {
+        if (!this.bucketName)
+            throw new Error("Unable to find storage");
+        const storage = await this.getbucket().upload(cloudPath, blob);
+        if (storage.error) {
+            throw new Error(`Unable to upload file, ${storage.error.message}`)
+        }
+        return true;
     }
 }
 

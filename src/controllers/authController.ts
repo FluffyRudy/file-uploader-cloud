@@ -8,6 +8,7 @@ import { hash, genSalt } from "bcryptjs";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 
+
 export const SignUpGet = async (req: Request, res: Response) => {
     res.render("signup", { errors: {} })
 }
@@ -34,6 +35,14 @@ export const SignUpPost = async (req: Request, res: Response, next: NextFunction
         const body = (req.body as SignUpRequestBody)
         const salt = await genSalt();
         const hashedPassword = await hash(body.password, salt);
+
+        const response = await storagClient.signUp({
+            email: body.email,
+            password: hashedPassword,
+        })
+        if ("error" in response && response.error) {
+            return next(response.error);
+        }
         const user = await dbClient.getInstance().user.create({
             data: {
                 username: body.username,
@@ -41,6 +50,7 @@ export const SignUpPost = async (req: Request, res: Response, next: NextFunction
                 email: body.email
             }
         });
+        console.log(response);
         res.redirect("/");
     } catch (err) {
         if ((err as PrismaClientKnownRequestError).code === 'P2002') {
