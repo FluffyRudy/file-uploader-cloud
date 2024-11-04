@@ -1,16 +1,115 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DEV_DATABASE_URL")
+  url      = env("DATABASE_URL")
+  schemas  = ["public", "storage"]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model User {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  email      String   @unique @db.VarChar
+  username   String   @db.VarChar
+  password   String   @db.VarChar
+  storage    String?  @db.Text
+  buckets    buckets? @relation(fields: [storage], references: [id], onDelete: Restrict)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model buckets {
+  id                         String                       @id
+  name                       String                       @unique(map: "bname")
+  owner                      String?                      @db.Uuid
+  created_at                 DateTime?                    @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime?                    @default(now()) @db.Timestamptz(6)
+  public                     Boolean?                     @default(false)
+  avif_autodetection         Boolean?                     @default(false)
+  file_size_limit            BigInt?
+  allowed_mime_types         String[]
+  owner_id                   String?
+  User                       User[]
+  objects                    objects[]
+  s3_multipart_uploads       s3_multipart_uploads[]
+  s3_multipart_uploads_parts s3_multipart_uploads_parts[]
+
+  @@schema("storage")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model migrations {
+  id          Int       @id
+  name        String    @unique @db.VarChar(100)
+  hash        String    @db.VarChar(40)
+  executed_at DateTime? @default(now()) @db.Timestamp(6)
+
+  @@schema("storage")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model objects {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bucket_id        String?
+  name             String?
+  owner            String?   @db.Uuid
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+  last_accessed_at DateTime? @default(now()) @db.Timestamptz(6)
+  metadata         Json?
+  path_tokens      String[]  @default(dbgenerated("string_to_array(name, '/'::text)"))
+  version          String?
+  owner_id         String?
+  user_metadata    Json?
+  buckets          buckets?  @relation(fields: [bucket_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "objects_bucketId_fkey")
+
+  @@unique([bucket_id, name], map: "bucketid_objname")
+  @@index([bucket_id, name], map: "idx_objects_bucket_id_name")
+  @@index([name], map: "name_prefix_search")
+  @@schema("storage")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model s3_multipart_uploads {
+  id                         String                       @id
+  in_progress_size           BigInt                       @default(0)
+  upload_signature           String
+  bucket_id                  String
+  key                        String
+  version                    String
+  owner_id                   String?
+  created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  user_metadata              Json?
+  buckets                    buckets                      @relation(fields: [bucket_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  s3_multipart_uploads_parts s3_multipart_uploads_parts[]
+
+  @@index([bucket_id, key, created_at], map: "idx_multipart_uploads_list")
+  @@schema("storage")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model s3_multipart_uploads_parts {
+  id                   String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  upload_id            String
+  size                 BigInt               @default(0)
+  part_number          Int
+  bucket_id            String
+  key                  String
+  etag                 String
+  owner_id             String?
+  version              String
+  created_at           DateTime             @default(now()) @db.Timestamptz(6)
+  buckets              buckets              @relation(fields: [bucket_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  s3_multipart_uploads s3_multipart_uploads @relation(fields: [upload_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("storage")
 }
 
 model Session {
@@ -18,11 +117,6 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
-}
 
-model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  username String
-  password String
+  @@schema("public")
 }

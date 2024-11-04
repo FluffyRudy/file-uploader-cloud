@@ -38,6 +38,10 @@ export class StorageClient {
             return error as LoginResponse;
         }
     }
+
+    public getInstance() {
+        return this.storageCLient;
+    }
 }
 
 const dbClient = new DBClient();

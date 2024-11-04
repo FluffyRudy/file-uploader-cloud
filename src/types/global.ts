@@ -10,9 +10,11 @@ export type LoginResponse = Promise<AuthTokenResponse | AuthApiError>;
 
 export type User = {
     id: String
+    created_at?: Date
     email: String
     username: string
     password: string
+    storage?: string
 }
 
 export interface SignInRequestBody extends Request {
