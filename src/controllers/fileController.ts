@@ -29,7 +29,8 @@ export const UploadFilePost = async (
             req.body.folder || "default_folder",
             file.originalname
         );
-        return storagClient.uploadFile(filepath, file.buffer);
+        console.log(filepath)
+        return storagClient.uploadFile(filepath, file.buffer, file.mimetype);
     });
     try {
         const uploadResponse = await Promise.allSettled(uploadPromise);

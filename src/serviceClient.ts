@@ -80,10 +80,12 @@ export class StorageClient {
         this.bucketName = id;
     }
 
-    public async uploadFile(cloudPath: string, blob: Buffer) {
+    public async uploadFile(cloudPath: string, blob: Buffer, mimeType = 'text/plain') {
+        console.log(cloudPath, this.bucketName)
         if (!this.bucketName)
             throw new Error("Unable to find storage");
-        const storage = await this.getbucket().upload(cloudPath, blob);
+        console.log(mimeType)
+        const storage = await this.getbucket().upload(cloudPath, blob, { contentType: mimeType, upsert: true });
         if (storage.error) {
             throw new Error(`Unable to upload file, ${storage.error.message}`)
         }

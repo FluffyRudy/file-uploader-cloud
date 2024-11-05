@@ -10,9 +10,9 @@ export const HomepageGet = async (req: Request, res: Response, next: NextFunctio
     }
 
     const user = req.user as User
-    if (user.storage)
+    if (user.storage) {
         storagClient.setBucket(user.storage)
-
+    }
     try {
         const storageSession = await storagClient.getInstance().auth.getSession();
         if (!storageSession.data.session) {
