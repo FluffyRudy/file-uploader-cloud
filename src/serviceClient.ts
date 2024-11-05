@@ -87,7 +87,7 @@ export class StorageClient {
         if (storage.error) {
             throw new Error(`Unable to upload file, ${storage.error.message}`)
         }
-        return true;
+        return cloudPath.split("/").reverse()[0];
     }
 }
 

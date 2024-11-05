@@ -1,38 +1,42 @@
 import { Request, Response, NextFunction } from "express";
+import { join } from "path";
 import { storagClient } from "../serviceClient";
-import { join } from "path"
 
-export const UploadFilePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    if (!req.isAuthenticated()) {
-        return res.redirect("/");
-    }
-    let filenames = req.headers['x-file-name'];
-
-    if (!filenames) {
-        res.status(400).json({ message: "Filename is required", status: 400 });
+export const UploadFilePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    if (!req.files) {
+        res.json({ error: "Please select at least one file" });
         return;
     }
-    if (!Array.isArray(filenames)) filenames = [filenames];
 
-    const uploadPromises: Array<Promise<boolean>> = [];
-    req.on('data', (chunk) => {
-        filenames.forEach(filename => {
-            const uploadPromise = storagClient.uploadFile(filename, chunk);
-            uploadPromises.push(uploadPromise);
-        })
+    let files = Array.isArray(req.files)
+        ? req.files
+        : Object.keys(req.files).length > 0
+            ? req.files.files
+            : [];
+
+
+    if (files.length === 0) {
+        res.json({ error: "Please select at least one file" });
+        return;
+    }
+
+    const uploadPromise = files.map((file) => {
+        const filepath = join(
+            req.body.folder || "default_folder",
+            file.originalname
+        );
+        return storagClient.uploadFile(filepath, file.buffer);
     });
-
-    req.on('end', async () => {
-        try {
-            const uploadResponse = await Promise.all(uploadPromises);
-            res.status(200).json({ message: "Successfully uploaded file", status: 200 })
-        } catch (error) {
-            res.status(500).json({ message: "Internal server error", status: 500 })
-        }
-    });
-
-    req.on('error', (error) => {
-        console.error("upload error: ", error.message);
-        res.status(503).json({ message: "Failed to upload file", status: 503 })
-    })
-}
+    try {
+        const uploadResponse = await Promise.allSettled(uploadPromise);
+        console.log(uploadResponse);
+        res.json({ data: uploadResponse });
+        return;
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
