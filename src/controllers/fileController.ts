@@ -8,7 +8,7 @@ export const UploadFilePost = async (
     next: NextFunction
 ) => {
     if (!req.files) {
-        res.json({ error: "Please select at least one file" });
+        res.status(400).json({ error: "Please select at least one file", status: 400 });
         return;
     }
 
@@ -20,7 +20,7 @@ export const UploadFilePost = async (
 
 
     if (files.length === 0) {
-        res.json({ error: "Please select at least one file" });
+        res.status(400).json({ error: "Please select at least one file", status: 400 });
         return;
     }
 
@@ -29,15 +29,17 @@ export const UploadFilePost = async (
             req.body.folder || "default_folder",
             file.originalname
         );
-        console.log(filepath)
         return storagClient.uploadFile(filepath, file.buffer, file.mimetype);
     });
     try {
         const uploadResponse = await Promise.allSettled(uploadPromise);
-        console.log(uploadResponse);
-        res.json({ data: uploadResponse });
-        return;
+        res.status(200).json({ data: uploadResponse, status: 200 });
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error", status: 500 });
     }
 };
+
+// const { data, error } = await storagClient.getInstance()
+// .storage
+// .from(user.storage!)
+// .list('', { limit: 100 });

@@ -8,6 +8,12 @@ async function handleUpload(fileInput, folderInput) {
 
   const formData = new FormData();
   const files = Array.from(fileInput.files);
+
+  if (files.length === 0) {
+    displayError("Please select at least one file");
+    return;
+  }
+
   files.forEach((file) => {
     formData.append("files", file);
   });
@@ -15,10 +21,11 @@ async function handleUpload(fileInput, folderInput) {
 
   const filePreviewContainer = document.getElementById("file-preview");
   filePreviewContainer.innerHTML = "";
+  clearMessages();
 
   files.forEach((file) => {
     const fileBox = document.createElement("div");
-    fileBox.className = "file-box"; // Apply class for styling
+    fileBox.className = "file-box";
     fileBox.innerHTML = `
       <div class="file-info">
         <span class="file-name">${file.name}</span>
@@ -34,19 +41,30 @@ async function handleUpload(fileInput, folderInput) {
   })
     .then(async (res) => {
       const data = await res.json();
-      console.log("data: ", data);
+      if (res.ok) {
+        displaySuccess("Files uploaded successfully");
+        console.log("data: ", data);
+      } else {
+        displayError(data.error || "An error occurred during upload");
+      }
     })
-    .catch((err) => console.log(err.message))
+    .catch((err) => displayError("Upload failed: " + err.message))
     .finally(() => {
       fileInput.value = "";
       folderInput.value = "";
-      filePreviewContainer.innerHTML = "";
+      filePreviewContainer.firstChild?.remove();
     });
 }
 
 const folderInput = document.getElementById("folderinput");
 const uploadBtn = document.getElementById("fileupload");
 const fileInput = document.getElementById("fileinput");
+const errorContainer = document.createElement("div");
+const successContainer = document.createElement("div");
+errorContainer.id = "error-container";
+successContainer.id = "success-container";
+document.body.prepend(errorContainer);
+document.body.prepend(successContainer);
 
 window.addEventListener("DOMContentLoaded", () => {
   if (!uploadBtn) return;
@@ -57,11 +75,12 @@ window.addEventListener("DOMContentLoaded", () => {
   fileInput.addEventListener("change", () => {
     const filePreviewContainer = document.getElementById("file-preview");
     filePreviewContainer.innerHTML = "";
+    clearMessages();
 
     const files = Array.from(fileInput.files);
     files.forEach((file) => {
       const fileBox = document.createElement("div");
-      fileBox.className = "file-box"; // Apply class for styling
+      fileBox.className = "file-box";
       fileBox.innerHTML = `
         <div class="file-info">
           <span class="file-name">${file.name}</span>
@@ -72,3 +91,20 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+function displayError(message) {
+  errorContainer.innerText = message;
+  errorContainer.style.display = "block";
+}
+
+function displaySuccess(message) {
+  successContainer.innerText = message;
+  successContainer.style.display = "block";
+}
+
+function clearMessages() {
+  errorContainer.style.display = "none";
+  errorContainer.innerText = "";
+  successContainer.style.display = "none";
+  successContainer.innerText = "";
+}
