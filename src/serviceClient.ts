@@ -28,15 +28,14 @@ export class StorageClient {
         );
     }
 
-    public async logIn(credentials: StorageAuthCredentials): StorageAuthResponse {
+    public async logIn(credentials: StorageAuthCredentials) {
         try {
-            const StorageAuthResponse = await this.storageCLient.auth.signInWithPassword(
+            const { data, error } = await this.storageCLient.auth.signInWithPassword(
                 credentials
             );
-            return StorageAuthResponse;
+            return { data, error };
         } catch (error) {
-            console.error(error);
-            return error as StorageAuthResponse;
+            return { data: { user: null, session: null }, error: error }
         }
     }
 
@@ -54,14 +53,6 @@ export class StorageClient {
         return this.storageCLient;
     }
 
-
-    public async createBucket(id: string) {
-        const response = await this.storageCLient.storage.createBucket(id);
-        if (response.error) {
-            return null
-        }
-        return response
-    }
 
     private getbucket() {
         return this.storageCLient.storage.from(this.bucketName!);
@@ -88,6 +79,19 @@ export class StorageClient {
             throw new Error(`Unable to upload file, ${storage.error.message}`)
         }
         return cloudPath.split("/").reverse()[0];
+    }
+
+    public async createBucket(bucketName: string) {
+        try {
+            const response = await this.storageCLient.storage.createBucket(bucketName);
+            return { data: response.data, error: response.error }
+        } catch (err) {
+            return { data: null, error: (err as Error) }
+        }
+    }
+
+    public getBucketName() {
+        return this.bucketName;
     }
 }
 

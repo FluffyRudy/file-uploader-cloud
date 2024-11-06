@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Files</title>
+</head>
+<body>
+    <div class="error"><p><%= locals?.errors?.fileList %> </p></div>
+    <h1><%= locals?.folderName || "No files or folders found" %> </h1>
+    <ul>
+        <% locals?.files?.forEach(file => { %>
+            <li><%= file.name  %> </li>
+        <% }) %> 
+    </ul>
+</body>
+</html>

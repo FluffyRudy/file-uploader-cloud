@@ -54,7 +54,13 @@ export const UploadFilePost = async (
     }
 };
 
-// const { data, error } = await storagClient.getInstance()
-// .storage
-// .from(user.storage!)
-// .list('', { limit: 100 });
+export const iterDirGet = async (req: Request, res: Response) => {
+    let currentFolder = req.params.path || '';
+    try {
+        const bucket = (req.user as User).storage
+        const fetchedFiles = await storagClient.getInstance().storage.from(bucket!).list(currentFolder);
+        return res.render("listFiles", { files: fetchedFiles.data, errors: {} })
+    } catch (error) {
+        return res.render("listFiles", { files: [], errors: { fileList: "No file or folder found" } })
+    }
+}

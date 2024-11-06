@@ -12,6 +12,7 @@ import { join } from "path"
 import { homeRouter } from "./routers/homeRouter";
 import { authRouter } from "./routers/authRouter";
 import { fileRouter } from "./routers/fileRouter";
+import { initStorage } from "./middlewares/storageMiddleware";
 
 config();
 
@@ -87,8 +88,8 @@ app.use((req, res, next) => {
   next();
 })
 
-app.use("/", homeRouter);
-app.use("/file", fileRouter);
+app.use("/", initStorage, homeRouter);
+app.use("/file", initStorage, fileRouter);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.send(`<h1>${err}</h1>`)
 })

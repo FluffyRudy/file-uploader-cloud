@@ -1,3 +1,4 @@
+import { listFolder } from "./listFolder.js";
 /**
  *
  * @param {HTMLInputElement} fileInput
