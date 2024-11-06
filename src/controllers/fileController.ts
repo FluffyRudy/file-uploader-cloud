@@ -1,12 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { join } from "path";
-import { storagClient } from "../serviceClient";
+import { dbClient, storagClient } from "../serviceClient";
+import { User } from "../types/global";
 
 export const UploadFilePost = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
+    if (!req.isAuthenticated()) {
+        res.status(403).json({ error: "Unauthorized access", status: 403 });
+        return;
+    }
     if (!req.files) {
         res.status(400).json({ error: "Please select at least one file", status: 400 });
         return;
@@ -36,6 +41,16 @@ export const UploadFilePost = async (
         res.status(200).json({ data: uploadResponse, status: 200 });
     } catch (error) {
         res.status(500).json({ error: "Internal server error", status: 500 });
+        const folder = (req.body.folder ? ' ,' + req.body.folder : '')
+        await dbClient.getInstance().uploadLogs.create({
+            data: {
+                user_id: (req.user as User).id,
+                file_path: files.reduce((accm, curr) => curr.filename + accm, ',') + folder,
+                file_size: files.reduce((accm, file) => file.size + accm, 0),
+                status: 'failure',
+                error_message: (error as Error).message
+            }
+        })
     }
 };
 

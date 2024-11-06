@@ -11,13 +11,14 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model User {
-  id         String   @id @default(uuid())
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  email      String   @unique @db.VarChar
-  username   String   @db.VarChar
-  password   String   @db.VarChar
-  storage    String?  @db.Text
-  buckets    buckets? @relation(fields: [storage], references: [id], onDelete: Restrict)
+  id         String       @id @default(uuid())
+  created_at DateTime     @default(now()) @db.Timestamptz(6)
+  email      String       @unique @db.VarChar
+  username   String       @db.VarChar
+  password   String       @db.VarChar
+  storage    String?
+  UploadLogs UploadLogs[]
+  buckets    buckets?     @relation(fields: [storage], references: [id], onDelete: Restrict)
 
   @@schema("public")
 }
@@ -117,6 +118,22 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
+
+  @@schema("public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model UploadLogs {
+  id            Int       @id(map: "upload_logs_pkey") @default(autoincrement())
+  file_path     String
+  user_id       String?
+  file_size     BigInt?
+  status        String?
+  error_message String?
+  timestamp     DateTime? @default(now()) @db.Timestamptz(6)
+  User          User?     @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "upload_logs_user_id_fkey")
 
   @@schema("public")
 }
