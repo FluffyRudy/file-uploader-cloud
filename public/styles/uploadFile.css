@@ -191,3 +191,25 @@ header {
   background-color: wheat;
   color: black;
 }
+
+.show-files {
+  display: inline-block;
+  padding: 12px 20px;
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.show-files:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.show-files:active {
+  transform: translateY(0);
+}
