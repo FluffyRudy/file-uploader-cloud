@@ -80,8 +80,8 @@ li.file-item {
   border-radius: 5px;
   display: flex;
   align-items: center;
-  gap: 20px;
   transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 li.file-item:hover {
@@ -96,7 +96,6 @@ li.file-item::before {
 li.file-item > button {
   border: none;
   background-color: transparent;
-  padding: 0 20px;
   font-size: larger;
   color: #fff;
   font-weight: 500;
@@ -110,10 +109,20 @@ button.folders {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: left;
+  font-weight: bolder;
+  font-size: larger;
+}
+
+button.folders::before {
+  content: "🖿";
+  margin-right: 10px;
 }
 
 button.folders:hover {
   background-color: #505050;
+  cursor: pointer;
 }
 
 button.folders:focus {

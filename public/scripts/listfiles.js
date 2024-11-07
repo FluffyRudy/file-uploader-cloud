@@ -43,12 +43,14 @@ async function getFolderData(prevFolder = "", folder) {
   });
 
   if (folderData.ok) {
-    container.innerHTML = "";
+    while (container.firstChild) {
+      container.firstChild.remove();
+    }
     const { fileObjects } = await folderData.json();
     const { files, folders } = fileObjects;
 
-    container.innerHTML += listFiles(files);
-    container.innerHTML += listFolder(folders);
+    container.appendChild(listFiles(files));
+    container.appendChild(listFolder(folders));
     document.body.appendChild(container);
 
     if (folder) {
@@ -82,34 +84,49 @@ async function getFolderData(prevFolder = "", folder) {
 }
 
 /**
- *
  * @param {Array<FileObject>} files
- * @returns {string}
+ * @returns {HTMLElement}
  */
 function listFiles(files) {
-  if (files.length === 0) return "";
-  let res = "<ul>\n";
+  if (files.length === 0) return document.createElement("ul");
+
+  const ul = document.createElement("ul");
   for (let file of files) {
-    res += `<li class="file-item" data-filename="${file.name}">
-      <button class="files">${file.name}</button>
-    </li>\n`;
+    const li = document.createElement("li");
+    li.classList.add("file-item");
+    li.setAttribute("data-filename", file.name);
+
+    const button = document.createElement("button");
+    button.classList.add("files");
+    button.textContent = file.name;
+
+    li.appendChild(button);
+    ul.appendChild(li);
   }
-  res += "\n</ul>";
-  return res;
+
+  return ul;
 }
 
 /**
- *
  * @param {Array<string>} folders
+ * @returns {HTMLElement}
  */
 function listFolder(folders) {
-  if (folders.length === 0) return "";
-  let res = "<ul>\n";
+  if (folders.length === 0) return document.createElement("ul");
+
+  const ul = document.createElement("ul");
   for (let folder of folders) {
-    res += `<li><button class='folders'>${folder}</button></li>\n`;
+    const li = document.createElement("li");
+
+    const button = document.createElement("button");
+    button.classList.add("folders");
+    button.textContent = folder;
+
+    li.appendChild(button);
+    ul.appendChild(li);
   }
-  res += "\n</ul>";
-  return res;
+
+  return ul;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
