@@ -22,6 +22,34 @@ h1 {
   margin-bottom: 20px;
 }
 
+#prevFolderBtn {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  margin-bottom: 20px;
+
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
+}
+
+#prevFolderBtn:hover {
+  background-color: #505050;
+}
+
+#prevFolderBtn:focus {
+  outline: 2px solid #707070;
+}
+
+#prevFolderBtn:active {
+  background-color: #383838;
+}
+
 #container {
   width: 100%;
   max-width: 600px;

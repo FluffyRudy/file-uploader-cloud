@@ -5,6 +5,8 @@
  */
 async function getFolderData(prevFolder = "", folder) {
   const container = document.getElementById("container");
+  const prevFolderBtn = document.getElementById("prevFolderBtn");
+
   if (typeof folder !== "string") throw TypeError("Expected string parameter");
 
   const folderData = await fetch(`/file/folder`, {
@@ -19,9 +21,21 @@ async function getFolderData(prevFolder = "", folder) {
     container.innerHTML = "";
     const { fileObjects } = await folderData.json();
     const { files, folders } = fileObjects;
+
     container.innerHTML += listFiles(files);
     container.innerHTML += listFolder(folders);
     document.body.appendChild(container);
+
+    if (prevFolder) {
+      prevFolderBtn.style.display = "block";
+      prevFolderBtn.onclick = async () =>
+        await getFolderData(
+          "",
+          prevFolder.slice(0, prevFolder.lastIndexOf("/"))
+        );
+    } else {
+      prevFolderBtn.style.display = "none";
+    }
 
     const folderList = container.querySelectorAll(".folders");
     Array.from(folderList).forEach((folderElem, i) => {
@@ -60,23 +74,11 @@ function listFolder(folders) {
   if (folders.length === 0) return "";
   let res = "<ul>\n";
   for (let folder of folders) {
-    res += `<li><button class='folders'>${folder}</button></li>` + "\n";
+    res += `<li><button class='folders'>${folder}</button></li>\n`;
   }
   res += "\n</ul>";
   return res;
 }
-
-/**
- * @typedef {Object} FileObject
- * @property {string} name - The name of the bucket.
- * @property {string} bucket_id - The unique identifier for the bucket.
- * @property {string} owner - The owner of the bucket.
- * @property {string} id - The unique identifier for the object.
- * @property {string} updated_at - The timestamp when the object was last updated.
- * @property {string} created_at - The timestamp when the object was created.
- * @property {string} last_accessed_at - The timestamp when the object was last accessed.
- * @property {Record<string, any>} metadata - Additional metadata associated with the object.
- */
 
 document.addEventListener("DOMContentLoaded", () => {
   getFolderData("", "");
