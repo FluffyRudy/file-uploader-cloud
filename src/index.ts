@@ -44,6 +44,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session);
 app.use(passport.session());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 passport.use(
   new Strategy(
     { usernameField: 'email', passwordField: 'password' },
@@ -91,8 +93,9 @@ app.use((req, res, next) => {
 app.use("/", initStorage, homeRouter);
 app.use("/file", initStorage, fileRouter);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.send(`<h1>${err}</h1>`)
-})
+  res.status(500).render("errorPage", { errorMessage: err.message || "An unexpected error occurred" });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Listening at port http://127.0.0.1:${PORT}`);

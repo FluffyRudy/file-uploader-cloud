@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { AuthApiError, AuthResponse, createClient, SupabaseClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
-import { StorageAuthCredentials, StorageAuthResponse } from "./types/global";
+import { StorageAuthCredentials, User } from "./types/global";
+import { filterFilesAndFolders } from "./controllers/fileFolderFilter";
 
 config();
 
@@ -92,6 +93,20 @@ export class StorageClient {
 
     public getBucketName() {
         return this.bucketName;
+    }
+
+    public async getFolderData(folder: string, user: User) {
+        try {
+            const bucket = user.storage;
+            const fetchedFiles = await storagClient
+                .getInstance()
+                .storage.from(bucket!)
+                .list(folder);
+            if (fetchedFiles.data) return filterFilesAndFolders(fetchedFiles.data);
+            return null;
+        } catch (error) {
+            return null;
+        }
     }
 }
 

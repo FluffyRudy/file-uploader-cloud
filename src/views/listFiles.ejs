@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Your Files</title>
+    <title>Your Files</title>
+    <link rel="stylesheet" href="/styles/listfile.css"> 
 </head>
 <body>
-    <div class="error"><p><%= locals?.errors?.fileList %> </p></div>
-    <h1><%= locals?.folderName || "No files or folders found" %> </h1>
-    <ul>
-        <% locals?.files?.forEach(file => { %>
-            <li><%= file.name  %> </li>
-        <% }) %> 
-    </ul>
+    <h1>Show files and folders</h1>
+    <div id="container"></div>
 </body>
+<script src="/scripts/listfiles.js"></script>
 </html>

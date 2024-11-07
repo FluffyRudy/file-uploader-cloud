@@ -13,7 +13,9 @@ export const UploadFilePost = async (
         return;
     }
     if (!req.files) {
-        res.status(400).json({ error: "Please select at least one file", status: 400 });
+        res
+            .status(400)
+            .json({ error: "Please select at least one file", status: 400 });
         return;
     }
 
@@ -23,9 +25,10 @@ export const UploadFilePost = async (
             ? req.files.files
             : [];
 
-
     if (files.length === 0) {
-        res.status(400).json({ error: "Please select at least one file", status: 400 });
+        res
+            .status(400)
+            .json({ error: "Please select at least one file", status: 400 });
         return;
     }
 
@@ -41,26 +44,35 @@ export const UploadFilePost = async (
         res.status(200).json({ data: uploadResponse, status: 200 });
     } catch (error) {
         res.status(500).json({ error: "Internal server error", status: 500 });
-        const folder = (req.body.folder ? ' ,' + req.body.folder : '')
+        const folder = req.body.folder ? " ," + req.body.folder : "";
         await dbClient.getInstance().uploadLogs.create({
             data: {
                 user_id: (req.user as User).id,
-                file_path: files.reduce((accm, curr) => curr.filename + accm, ',') + folder,
+                file_path:
+                    files.reduce((accm, curr) => curr.filename + accm, ",") + folder,
                 file_size: files.reduce((accm, file) => file.size + accm, 0),
-                status: 'failure',
-                error_message: (error as Error).message
-            }
-        })
+                status: "failure",
+                error_message: (error as Error).message,
+            },
+        });
     }
 };
 
 export const iterDirGet = async (req: Request, res: Response) => {
-    let currentFolder = req.params.path || '';
+    res.render("listFiles");
+};
+
+export const iterDirPost = async (req: Request, res: Response) => {
+    const folder = req.body.currentFolder;
+    if (folder === undefined || folder === null) {
+        res.status(404).json({ error: "No files and folders found", status: 400 });
+        return;
+    }
     try {
-        const bucket = (req.user as User).storage
-        const fetchedFiles = await storagClient.getInstance().storage.from(bucket!).list(currentFolder);
-        return res.render("listFiles", { files: fetchedFiles.data, errors: {} })
-    } catch (error) {
-        return res.render("listFiles", { files: [], errors: { fileList: "No file or folder found" } })
+        const fetchedFiles = await storagClient.getFolderData(folder, (req.user as User));
+        res.status(200).json({ fileObjects: fetchedFiles, currentFolder: folder, errors: {} })
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({ error: "No files and folders found", fileObjects: null, currentFolder: folder });
     }
 }
