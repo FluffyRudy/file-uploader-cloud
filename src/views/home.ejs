@@ -19,7 +19,7 @@
         <div class="upload-container">
             <div class="folder-input-container">
                 <label for="folderinput">Folder Name:</label>
-                <input type="text" id="folderinput" placeholder="Enter folder name" />
+                <input type="text" id="folderinput" placeholder="format: myFolder, myfolder/important" />
             </div>
 
             <div id="drag-box" class="drag-box">
@@ -33,11 +33,6 @@
         <div class="logout-container">
             <a href="/auth/logout">Logout</a>
         </div>
-
-        <footer class="footer">
-            <p>This is made by FluffyRude. You can do anything with this source code.</p>
-            <p>You can find me at: <a href="https://github.com/FluffyRudy">Github</a></p>
-        </footer>
     <% } else { %>
         <div class="login-prompt">
             <p>Please <a href="/auth/signin">sign in</a> or <a href="/auth/signup">sign up to access your account.</p>

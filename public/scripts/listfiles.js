@@ -26,23 +26,30 @@ async function getFolderData(prevFolder = "", folder) {
     container.innerHTML += listFolder(folders);
     document.body.appendChild(container);
 
-    if (prevFolder) {
+    if (folder) {
+      const lastIndex = folder.slice(0, -1).lastIndexOf("/");
+      const prevFolderText =
+        lastIndex >= 0 ? folder.slice(0, lastIndex + 1) : "";
+
       prevFolderBtn.style.display = "block";
-      prevFolderBtn.onclick = async () =>
-        await getFolderData(
-          "",
-          prevFolder.slice(0, prevFolder.lastIndexOf("/"))
-        );
+      prevFolderBtn.onclick = async () => {
+        await getFolderData(prevFolderText, prevFolderText);
+      };
     } else {
       prevFolderBtn.style.display = "none";
     }
 
     const folderList = container.querySelectorAll(".folders");
     Array.from(folderList).forEach((folderElem, i) => {
-      const prevFolder = folder;
-      const nextFolder = prevFolder + folders[i] + "/";
-      folderElem.onclick = async () =>
-        await getFolderData(prevFolder, nextFolder);
+      const nextFolder = `${folder}${folders[i]}/`;
+      folderElem.onclick = async () => await getFolderData(folder, nextFolder);
+    });
+
+    const fileList = container.querySelectorAll(".file-item");
+    fileList.forEach((file, i) => {
+      file.onclick = () => {
+        console.log(folder + files[i].name);
+      };
     });
   } else {
     console.log(await folderData.json());
