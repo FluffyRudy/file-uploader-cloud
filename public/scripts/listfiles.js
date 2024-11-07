@@ -1,5 +1,30 @@
 /**
  *
+ * @param {string} filename
+ */
+async function downloadFile(filename) {
+  const downloadResponse = await fetch("/file/download", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ filename }),
+  });
+  const blob = await downloadResponse.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename.split("/").pop();
+
+  document.body.appendChild(a);
+  a.click();
+
+  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+/**
+ *
  * @param {string} prevFolder
  * @param {string} folder
  */
@@ -47,8 +72,8 @@ async function getFolderData(prevFolder = "", folder) {
 
     const fileList = container.querySelectorAll(".file-item");
     fileList.forEach((file, i) => {
-      file.onclick = () => {
-        console.log(folder + files[i].name);
+      file.onclick = async () => {
+        await downloadFile(folder + files[i].name);
       };
     });
   } else {
