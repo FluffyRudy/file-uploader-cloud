@@ -5,7 +5,7 @@ import { User } from "../types/global";
 
 export const initStorage = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.isAuthenticated())
-        return next(new Error("Unauthorized access"));
+        return res.render("/auth/login");
 
     const storageInstance = storagClient.getInstance();
     const storageSession = await storageInstance.auth.getSession();
