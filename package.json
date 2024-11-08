@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
-    "build": "prisma generate && tsc && cp -r ./src/views/ ./dist/views",
+    "build": "prisma generate && tsc && rm -rf ./dist/views && cp -r ./src/views/ ./dist/views",
     "start": "ts-node src/index.ts"
   },
   "repository": {

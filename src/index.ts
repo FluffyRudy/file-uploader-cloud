@@ -86,6 +86,10 @@ passport.deserializeUser(async (id, cb) => {
 
 app.use("/auth", authRouter);
 app.use((req, res, next) => {
+  if (!req.isAuthenticated()) return res.redirect('/auth/signin');
+  next();
+})
+app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 })
