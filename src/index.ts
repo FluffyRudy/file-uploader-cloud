@@ -96,3 +96,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).render("errorPage", { errorMessage: err.message || "An unexpected error occurred" });
 });
 
+app.listen(PORT, () => {
+  console.log(`Listening at http://127.0.0.1:${PORT}`)
+})
