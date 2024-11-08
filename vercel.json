@@ -11,16 +11,5 @@
       "src": "/(.*)",
       "dest": "dist/index.js"
     }
-  ],
-  "copy": [
-    {
-      "from": "dist/views",
-      "to": "dist/views",
-      "recursive": true
-    },
-    {
-      "from": "public",
-      "to": "dist/public"
-    }
   ]
 }
