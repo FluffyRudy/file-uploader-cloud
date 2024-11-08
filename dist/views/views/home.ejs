@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/styles/uploadFile.css">
+</head>
+<body>
+    <% if (locals.errors.storageNotFound) { %>
+        <div class="error-message"><%= locals.errors.storageNotFound %></div>
+    <% } %>
+
+    <% if (locals.user) { %>
+        <header class="user-greeting">
+            <h2>Hello <%= ', ' + locals.user.username %>!</h2>
+        </header>
+
+        <div class="upload-container">
+            <div class="folder-input-container">
+                <label for="folderinput">Folder Name:</label>
+                <input type="text" id="folderinput" placeholder="format: myFolder, myfolder/important" />
+            </div>
+
+            <div id="drag-box" class="drag-box">
+                <input type="file" id="fileinput" multiple>
+                <span>Drag and drop your files here</span>
+            </div>
+            <button id="fileupload" class="upload-button">Upload</button>
+            <div id="file-preview" class="file-preview"></div>
+            <div>
+                <a href="/file/folder" class="show-files">Show my files</a>
+            </div>
+        </div>
+
+        <div class="logout-container">
+            <a href="/auth/logout">Logout</a>
+        </div>
+    <% } else { %>
+        <div class="login-prompt">
+            <p>Please <a href="/auth/signin">sign in</a> or <a href="/auth/signup">sign up to access your account.</p>
+        </div>
+    <% } %>
+
+    <script type="module" src="/scripts/uploadFile.js"></script>
+</body>
+</html>

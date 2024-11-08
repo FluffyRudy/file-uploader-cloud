@@ -15,7 +15,7 @@ const serviceClient_1 = require("../serviceClient");
 const initStorage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     if (!req.isAuthenticated())
-        return next(new Error("Unauthorized access"));
+        return res.render("/auth/login");
     const storageInstance = serviceClient_1.storagClient.getInstance();
     const storageSession = yield storageInstance.auth.getSession();
     const { id, email, password, storage, username } = req.user;

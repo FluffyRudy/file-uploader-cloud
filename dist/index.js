@@ -97,6 +97,3 @@ app.use("/file", storageMiddleware_1.initStorage, fileRouter_1.fileRouter);
 app.use((err, req, res, next) => {
     res.status(500).render("errorPage", { errorMessage: err.message || "An unexpected error occurred" });
 });
-app.listen(PORT, () => {
-    console.log(`Listening at port http://127.0.0.1:${PORT}`);
-});
