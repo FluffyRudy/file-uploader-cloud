@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
-    "build": "tsc",
+    "build": "tsc && cp src/views/ -R dist/views",
     "start": "ts-node src/index.ts"
   },
   "repository": {
