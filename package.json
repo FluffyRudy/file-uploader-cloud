@@ -3,11 +3,7 @@
   "version": "1.0.0",
   "description": "File upload cloud storage",
   "main": "index.ts",
-  "scripts": {
-    "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
-    "build": "prisma generate && tsc && cp -r ./src/views/ ./dist/views",
-    "start": "ts-node src/index.ts"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FluffyRudy/file-uploader-cloud.git"
