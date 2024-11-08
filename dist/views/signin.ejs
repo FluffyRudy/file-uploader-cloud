@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+</head>
+<body>
+
+    <h1>Sign In</h1>
+
+    <% if (locals.errors?.userNotFound) { %>
+        <div class="error"><%= locals.errors.userNotFound %> </div>
+    <% } %> 
+    <form action="/auth/signin" method="POST">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <% if (locals.errors && locals.errors.email) { %>
+                <span style="color: red;"><%= locals.errors.email %></span>
+            <% } %>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <% if (locals.errors && locals.errors.password) { %>
+                <span style="color: red;"><%= locals.errors.password %></span>
+            <% } %>
+        </div>
+        <div>
+            <button type="submit">Sign In</button>
+        </div>
+    </form>
+
+    <div>
+        <p>Don't have an account? <a href="/auth/signup">Sign up here</a>.</p>
+    </div>
+
+</body>
+</html>
